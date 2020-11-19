@@ -15,18 +15,25 @@ from botbuilder.core import (
 from botbuilder.schema import Activity, ActivityTypes
 
 from bots import MentionBot
+from gov_channel_provider import GovChannelProvider
+import logging
+
+logging.warning("#### CHECKPOINT 1")
 
 # Create the loop and Flask app
 LOOP = asyncio.get_event_loop()
 APP = Flask(__name__, instance_relative_config=True)
 APP.config.from_object("config.DefaultConfig")
 
+logging.warning("#### CHECKPOINT 2")
+
+GOV_PROVIDER = GovChannelProvider()
 # Create adapter.
 # See https://aka.ms/about-bot-adapter to learn more about how bots work.
-SETTINGS = BotFrameworkAdapterSettings(APP.config["APP_ID"], APP.config["APP_PASSWORD"])
+SETTINGS = BotFrameworkAdapterSettings(APP.config["APP_ID"], APP.config["APP_PASSWORD"], channel_provider=GOV_PROVIDER)
 ADAPTER = BotFrameworkAdapter(SETTINGS)
 
-
+logging.warning("#### CHECKPOINT 3")
 # Catch-all for errors.
 async def on_error(  # pylint: disable=unused-argument
     self, context: TurnContext, error: Exception
@@ -61,6 +68,8 @@ ADAPTER.on_turn_error = MethodType(on_error, ADAPTER)
 # Create the Bot
 BOT = MentionBot()
 
+logging.warning("#### CHECKPOINT 4")
+
 # Listen for incoming requests on /api/messages.s
 @APP.route("/api/messages", methods=["POST"])
 def messages():
@@ -87,6 +96,8 @@ def messages():
 
 if __name__ == "__main__":
     try:
-        APP.run(debug=False, port=APP.config["PORT"])  # nosec debug
+        logging.warning("#### CHECKPOINT 6")
+        APP.run(debug=False, port=APP.config["PORT"])
+        logging.warning("#### CHECKPOINT 7")  # nosec debug
     except Exception as exception:
         raise exception

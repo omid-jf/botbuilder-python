@@ -1,2 +1,1 @@
-botbuilder-core>=4.7.1
-flask>=1.0.3
+botbuilder-integration-aiohttp>=4.10.1
